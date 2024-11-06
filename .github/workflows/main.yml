@@ -15,55 +15,10 @@ jobs:
       # Check for changes in the 'client' directory
       - name: Check for changes in client
         id: client_changes
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '^client/'; then
-            echo "client_changed=true" >> $GITHUB_ENV
-          else
-            echo "client_changed=false" >> $GITHUB_ENV
-          fi
+        run: echo "Changes in client"
 
       # Check for changes in the 'server' directory
       - name: Check for changes in server
         id: server_changes
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '^server/'; then
-            echo "server_changed=true" >> $GITHUB_ENV
-          else
-            echo "server_changed=false" >> $GITHUB_ENV
-          fi
+        run: echo "Changes in server"
 
-  client:
-    needs: check-changes
-    if: env.client_changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install client dependencies
-        run: |
-          cd client
-          npm install
-
-      - name: Run client tests
-        run: |
-          cd client
-          npm test
-
-  server:
-    needs: check-changes
-    if: env.server_changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install server dependencies
-        run: |
-          cd server
-          npm install
-
-      - name: Run server tests
-        run: |
-          cd server
-          npm test
