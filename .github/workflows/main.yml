@@ -66,7 +66,8 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem $SSH_USERNAME@$SSH_HOST '
-          docker stop client && docker rm client && docker pull meabhisingh/server_sample &&
+          sudo docker-compose pull meabhisingh/client_sample && 
+          sudo docker-compose up -d --no-deps --build client
           echo "Exiting the server..." &&
           exit
           '
@@ -104,7 +105,8 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key.pem $SSH_USERNAME@$SSH_HOST '
-          docker stop client && docker rm client && docker pull meabhisingh/client_sample &&
+          sudo docker-compose pull meabhisingh/server_sample && 
+          sudo docker-compose up -d --no-deps --build server
           echo "Exiting the server..." &&
           exit
           '

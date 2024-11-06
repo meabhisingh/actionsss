@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/wow", (req, res) => {
-  res.send("It works dude!");
+  res.send("It works!");
 });
 
 // your routes here
