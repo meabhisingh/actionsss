@@ -14,9 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Printing secrets
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          echo ${{ secrets.DOCKER_USERNAME }}
-          echo ${{ secrets.DOCKERHUB_TOKEN }}
+          echo $DOCKER_USERNAME
+          echo $DOCKER_PASSWORD
       
 
   check-changes:
