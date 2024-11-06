@@ -3,7 +3,7 @@ name: Monorepo Workflow
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   check-changes:
