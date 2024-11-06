@@ -6,9 +6,7 @@ on:
       - master
 
 
-env:
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+
 
 jobs:
   check-changes:
@@ -52,6 +50,9 @@ jobs:
           docker build -t meabhisingh/client_sample .
       
       - name: Pushing docker image to docker hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKERHUB_TOKEN
           docker push meabhisingh/client_sample
@@ -72,6 +73,9 @@ jobs:
           docker build -t meabhisingh/server_sample .
       
       - name: Pushing docker image to docker hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKERHUB_TOKEN
           docker push meabhisingh/server_sample
