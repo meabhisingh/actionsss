@@ -3,15 +3,38 @@ name: Monorepo Workflow
 on:
   push:
     branches:
-      - master
-    paths:
-      - 'client/**'
-      - 'server/**'
+      - main
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Check for changes in the 'client' directory
+      - name: Check for changes in client
+        id: client_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^client/'; then
+            echo "client_changed=true" >> $GITHUB_ENV
+          else
+            echo "client_changed=false" >> $GITHUB_ENV
+          fi
+
+      # Check for changes in the 'server' directory
+      - name: Check for changes in server
+        id: server_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^server/'; then
+            echo "server_changed=true" >> $GITHUB_ENV
+          else
+            echo "server_changed=false" >> $GITHUB_ENV
+          fi
+
   client:
-    # This job runs if there are changes in the 'client' directory
-    if: contains(join(github.event.commits.*.modified), 'client/')
+    needs: check-changes
+    if: env.client_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,13 +48,11 @@ jobs:
       - name: Run client tests
         run: |
           cd client
-          echo "Running client tests..."
-          echo "I am inside"
-          pwd
+          npm test
 
   server:
-    # This job runs if there are changes in the 'server' directory
-    if: contains(join(github.event.commits.*.modified), 'server/')
+    needs: check-changes
+    if: env.server_changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -45,6 +66,4 @@ jobs:
       - name: Run server tests
         run: |
           cd server
-          echo "Running server tests..."
-          echo "I am inside"
-          pwd
+          npm test
