@@ -8,6 +8,9 @@ on:
 jobs:
   check-changes:
     runs-on: ubuntu-latest
+    outputs:
+      client_changed: ${{ steps.client_changes.outputs.client }}
+      server_changed: ${{ steps.server_changes.outputs.server }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,43 +24,44 @@ jobs:
             client:
               - 'client/**'
 
-      
-      # Check for changes in the 'client' directory
+      # Check for changes in the 'server' directory
       - name: Check for changes in server
-        id: client_changes
+        id: server_changes
         uses: dorny/paths-filter@v2
         with:
           filters: |
             server:
               - 'server/**'
-       
-  client: 
+
+  client:
     needs: check-changes
+    if: needs.check-changes.outputs.client_changed == 'true'
     runs-on: ubuntu-latest
-    if: steps.check-changes.outputs.client == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.before }}
 
-      - name: checking inside client
-        run : |
-          echo "Checking inside client"
-          ls -la client
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Run client tests
+        run: echo "Inside client tests"
+
 
   server:
     needs: check-changes
+    if: needs.check-changes.outputs.server_changed == 'true'
     runs-on: ubuntu-latest
-    if: steps.check-changes.outputs.server == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.before }}
 
-      - name: checking inside server
-        run : |
-          echo "Checking inside server"
-          ls -la server
-      
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Run server tests
+        run: echo "Inside server tests"
