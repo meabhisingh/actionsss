@@ -1,0 +1,50 @@
+name: Monorepo Workflow
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'client/**'
+      - 'server/**'
+
+jobs:
+  client:
+    # This job runs if there are changes in the 'client' directory
+    if: contains(join(github.event.commits.*.modified), 'client/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm install
+
+      - name: Run client tests
+        run: |
+          cd client
+          echo "Running client tests..."
+          echo "I am inside"
+          pwd
+
+  server:
+    # This job runs if there are changes in the 'server' directory
+    if: contains(join(github.event.commits.*.modified), 'server/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm install
+
+      - name: Run server tests
+        run: |
+          cd server
+          echo "Running server tests..."
+          echo "I am inside"
+          pwd
