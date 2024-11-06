@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/error.js";
-import dotenv from "dotenv";
 import morgan from "morgan";
+import dotenv from "dotenv";
 
 dotenv.config({ path: "./.env" });
 

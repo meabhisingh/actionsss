@@ -5,22 +5,7 @@ on:
     branches:
       - master
 
-
-
-
 jobs:
-
-  sample:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Printing secrets
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      
-
   check-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -60,16 +45,15 @@ jobs:
         run: |
           cd client
           docker build -t meabhisingh/client_sample .
-      
+
       - name: Pushing docker image to docker hub
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker login -u $DOCKER_USERNAME -p $DOCKERHUB_TOKEN
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker push meabhisingh/client_sample
           docker logout
-      
 
   server:
     needs: check-changes
@@ -78,17 +62,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Creating docker Image
         run: |
           cd server
           docker build -t meabhisingh/server_sample .
-      
+
       - name: Pushing docker image to docker hub
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker login -u $DOCKER_USERNAME -p $DOCKERHUB_TOKEN
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker push meabhisingh/server_sample
           docker logout
