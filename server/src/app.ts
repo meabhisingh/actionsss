@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
 export const envMode = process.env.NODE_ENV?.trim() || "DEVELOPMENT";
-const port = process.env.PORT || 4000;
+const port = 4000;
 
 const app = express();
 
