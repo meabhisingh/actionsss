@@ -9,6 +9,16 @@ on:
 
 
 jobs:
+
+  sample:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Printing secrets
+        run: |
+          echo ${{ secrets.DOCKER_USERNAME }}
+          echo ${{ secrets.DOCKERHUB_TOKEN }}
+      
+
   check-changes:
     runs-on: ubuntu-latest
     outputs:
