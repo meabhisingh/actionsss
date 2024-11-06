@@ -55,6 +55,22 @@ jobs:
           docker push meabhisingh/client_sample
           docker logout
 
+      - name: Set up SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: SSH and Deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $SSH_USERNAME@$SSH_HOST '
+          docker stop client && docker rm client && docker pull meabhisingh/server_sample &&
+          echo "Exiting the server..." &&
+          exit
+          '
+
   server:
     needs: check-changes
     if: needs.check-changes.outputs.server_changed == 'true'
@@ -76,3 +92,19 @@ jobs:
           echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker push meabhisingh/server_sample
           docker logout
+
+      - name: Set up SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
+      - name: SSH and Deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $SSH_USERNAME@$SSH_HOST '
+          docker stop client && docker rm client && docker pull meabhisingh/client_sample &&
+          echo "Exiting the server..." &&
+          exit
+          '

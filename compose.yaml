@@ -1,0 +1,25 @@
+services:
+  client:
+    image: meabhisingh/client_sample
+    ports:
+      - "4173:4173"
+    depends_on:
+      - server
+
+  server:
+    image: meabhisingh/server_sample
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+    driver: local

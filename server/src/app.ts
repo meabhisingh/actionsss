@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
+app.get("/wow", (req, res) => {
+  res.send("It works dude!");
+});
+
 // your routes here
 
 app.get("*", (req, res) => {
