@@ -13,12 +13,12 @@ jobs:
       server_changed: ${{ steps.server_changes.outputs.server }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Check for changes in the 'client' directory
       - name: Check for changes in client
         id: client_changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         with:
           filters: |
             client:
@@ -27,7 +27,7 @@ jobs:
       # Check for changes in the 'server' directory
       - name: Check for changes in server
         id: server_changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         with:
           filters: |
             server:
