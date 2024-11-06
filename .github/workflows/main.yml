@@ -5,6 +5,11 @@ on:
     branches:
       - master
 
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
 jobs:
   check-changes:
     runs-on: ubuntu-latest
@@ -41,14 +46,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install client dependencies
+      - name: Creating docker Image
         run: |
           cd client
-          npm install
-
-      - name: Run client tests
-        run: echo "Inside client tests"
-
+          docker build -t meabhisingh/client_sample .
+      
+      - name: Pushing docker image to docker hub
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKERHUB_TOKEN
+          docker push meabhisingh/client_sample
+          docker logout
+      
 
   server:
     needs: check-changes
@@ -57,11 +65,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install server dependencies
+      
+      - name: Creating docker Image
         run: |
           cd server
-          npm install
-
-      - name: Run server tests
-        run: echo "Inside server tests"
+          docker build -t meabhisingh/server_sample .
+      
+      - name: Pushing docker image to docker hub
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKERHUB_TOKEN
+          docker push meabhisingh/server_sample
+          docker logout
